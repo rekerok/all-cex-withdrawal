@@ -1,20 +1,20 @@
 import time
 import ccxt
 import random
-
 import tqdm
 
 # ----main-options----#
-switch_cex = "binance"  # binance, mexc, kucoin, gate, okx, huobi, bybit
-symbolWithdraw = "USDT"  # символ токена
-network = "Arbitrum One"  # ID сети
-proxy_server = "http://login:password@IP:port"
+switch_cex = "okx"  # binance, mexc, kucoin, gate, okx, huobi, bybit
+symbolWithdraw = "ETH"  # символ токена
+network = "ERC20"  # ID сети
+# proxy_server = "http://login:password@IP:port"
+proxy_server = ""
 
 # ----second-options----#
-amount = [1.5, 2.5]  # минимальная и максимальная сумма
-decimal_places = 2  # количество знаков, после запятой для генерации случайных чисел
-delay = [35, 85]  # минимальная и максимальная задержка
-shuffle_wallets = "no"  # нужно ли мешать кошельки yes/no
+amount = [0.011115, 0.013232]  # минимальная и максимальная сумма
+decimal_places = 6  # количество знаков, после запятой для генерации случайных чисел
+delay = [100, 200]  # минимальная и максимальная задержка
+shuffle_wallets = True  # нужно ли мешать кошельки True/False
 # ----end-all-options----#
 
 
@@ -23,9 +23,10 @@ class API:
     binance_apikey = "your_api"
     binance_apisecret = "your_api_secret"
     # okx API
-    okx_apikey = "your_api"
-    okx_apisecret = "your_api_secret"
-    okx_passphrase = "your_api_password"
+    okx_apikey = "your_apikey"
+    okx_apisecret = "your_apisecret"
+    okx_passphrase = "your_passphrase"
+
     # bybit API
     bybit_apikey = "your_api"
     bybit_apisecret = "your_api_secret"
@@ -312,13 +313,13 @@ def get_withdrawal_fee(symbolWithdraw, chainName):
 
 def shuffle(wallets_list, shuffle_wallets):
     numbered_wallets = list(enumerate(wallets_list, start=1))
-    if shuffle_wallets.lower() == "yes":
+    if shuffle_wallets:
         random.shuffle(numbered_wallets)
-    elif shuffle_wallets.lower() == "no":
+    elif not shuffle_wallets:
         pass
     else:
         raise ValueError(
-            "\n>>> Неверное значение переменной 'shuffle_wallets'. Ожидается 'yes' или 'no'."
+            "\n>>> Неверное значение переменной 'shuffle_wallets'. Ожидается True или False."
         )
     return numbered_wallets
 
@@ -344,5 +345,5 @@ if __name__ == "__main__":
             for i in tqdm.tqdm(
                 range(round(random.uniform(delay[0],delay[1]))), desc="sleep ", bar_format="{desc}: {n_fmt}/{total_fmt}"
             ):
-                count_wallet+=1
                 time.sleep(1)
+            count_wallet+=1
